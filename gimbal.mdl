@@ -1,0 +1,42 @@
+basename gimbal
+frames 150
+push
+rotate x 15
+push
+move 250 250 0
+rotate y 360 spin
+scale 1 0.05 1
+sphere 0 0 0 90
+pop
+push
+move 250 250 0
+rotate x 360 spin2
+rotate x 90
+scale 1 4 1
+torus 0 0 0 3 100
+pop
+push
+move 250 250 0
+rotate z 360 spin4
+rotate y 360 spin3
+rotate y 90
+scale 1 4 1
+torus 0 0 0 3 110
+pop
+push
+move 250 250 0
+rotate x 360 spin7
+rotate y 360 spin6
+rotate z 360 spin5
+rotate z 90
+scale 1 4 1
+torus 0 0 0 2.5 120
+pop
+pop
+vary spin 0 150 0 2
+vary spin2 0 150 0 1
+vary spin3 0 150 0 2
+vary spin4 0 150 0 3
+vary spin5 0 150 0 2
+vary spin6 0 150 0 1
+vary spin7 0 150 0 3
