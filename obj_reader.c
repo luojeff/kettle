@@ -4,6 +4,7 @@
 #include <ctype.h>
 
 #include "matrix.h"
+#include "obj_reader.h"
 
 int read_obj_file(char *path, struct matrix *mat) {
   FILE *fp;
