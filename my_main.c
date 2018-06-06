@@ -95,21 +95,21 @@ void first_pass() {
 
   // Error and bound checking
   if(!frames_found) {
-    printf("Error: No frames found!\n");
+    printf("Error: No frames found\n");
     exit(0);
   } else if(!vary_found) {
-    printf("Error: No vary found!\n");
+    printf("Warning: No vary found\n");
   }
   
   if(vary_found && !basename_found) {
-    printf("Error: Vary found, yet basename not found!\n");
+    printf("Error: Vary found, basename not found\n");
     exit(0);
   }
 
   if (frames_found && !basename_found) {
     char def_name[] = "default";
     strcpy(name, def_name);    
-    printf("Basename undefined, set to %s!\n", def_name);
+    printf("Basename undefined, set to \"%s\"\n", def_name);
   }
 
   if(basename_found > 1) {
@@ -138,8 +138,6 @@ void first_pass() {
   vary_node corresponding to the given knob with the
   appropirate value.
   ====================*/
-
-#define EPSILON 0.0001
 struct vary_node **second_pass() {
   struct vary_node **arr_nodes = (struct vary_node **)calloc(num_frames, sizeof(struct vary_node *));
 
@@ -301,8 +299,8 @@ void my_main() {
       curr_node = curr_node->next;
     }
 
-    knob_value = 1.0;
-    for(i=0; i<lastop; i++) {      
+    knob_value = 1.0;    
+    for(i=0; i<lastop; i++) {
       
       switch (op[i].opcode) {
       case SPHERE:
@@ -503,7 +501,7 @@ void my_main() {
   }
 
   // Auto-create GIF
-  if(num_frames > 0)
+  if(num_frames > 1)
     make_animation(name);
 
   printf("Finished!\n");

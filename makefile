@@ -1,10 +1,7 @@
-OBJECTS= symtab.o print_pcode.o matrix.o my_main.o display.o draw.o gmath.o stack.o
+OBJECTS= symtab.o print_pcode.o matrix.o my_main.o display.o draw.o gmath.o stack.o obj_reader.o
 CFLAGS= -g
 LDFLAGS= -lm
 CC= gcc
-
-run: all
-	./mdl simple_anim.mdl
 
 all: parser
 
@@ -43,6 +40,12 @@ gmath.o: gmath.c gmath.h matrix.h
 
 stack.o: stack.c stack.h matrix.h
 	$(CC) $(CFLAGS) -c stack.c
+
+obj_reader.o: obj_reader.c obj_reader.h
+	$(CC) $(CFLAGS) -c obj_reader.c
+
+run: all
+	./mdl basic.mdl
 
 clean:
 	rm y.tab.c y.tab.h
