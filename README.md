@@ -1,6 +1,6 @@
 # kettle
 
-Final project for MKS66 (Graphics Programming)
+Final project for MKS66 (Graphics Programming) Pd. 10
 
 ### Contributors
 Jeffrey Luo\
