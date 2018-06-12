@@ -3,8 +3,6 @@ CFLAGS= -g
 LDFLAGS= -lm
 CC= gcc
 
-all: parser
-
 parser: lex.yy.c y.tab.c y.tab.h $(OBJECTS)
 	gcc -o mdl $(CFLAGS) lex.yy.c y.tab.c $(OBJECTS) $(LDFLAGS)
 
@@ -44,7 +42,7 @@ stack.o: stack.c stack.h matrix.h
 obj_reader.o: obj_reader.c obj_reader.h
 	$(CC) $(CFLAGS) -c obj_reader.c
 
-run: all
+run: parser
 	./mdl basic.mdl
 
 clean:

@@ -206,7 +206,7 @@ void print_knobs() {
   Returns:
 
   This is the main engine of the interpreter, it should
-  handle most of the commadns in mdl.
+  handle most of the commands in mdl.
 
   If frames is not present in the source (and therefore
   num_frames is 1, then process_knobs should be called.

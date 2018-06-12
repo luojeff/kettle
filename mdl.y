@@ -3,8 +3,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+  
 #include "parser.h"
 #include "matrix.h"
+#include "obj_reader.h"
+
+#if YYBISON
+  int yylex();
+  int yyerror(const char *s);
+#endif
 
 #define YYERROR_VERBOSE 1
 
@@ -771,7 +778,7 @@ GENERATE_RAYFILES
 
 
 /* Other C stuff */
-int yyerror(char *s)
+int yyerror(const char *s)
 {
   printf("Error in line %d:%s\n",lineno,s);
   return 0;
@@ -782,13 +789,37 @@ int yywrap()
   return 1;
 }
 
+int yylex();
+
 
 extern FILE *yyin;
 
 
 int main(int argc, char **argv) {
 
-  yyin = fopen(argv[1],"r");
+  char help_manual[] = "Not enough arguments";
+  struct matrix *mat;
+  
+  if(argc < 2){
+    printf("%s\n", help_manual);
+    exit(0);
+  }
+  
+  if(argv[1][0] != '-'){
+    yyin = fopen(argv[1],"r");
+    yyparse();
+  } else{
+    if(strcmp(argv[1],"--obj") == 0){
+      if(argc >= 3){
+        mat = new_matrix(4, 4); // fix this if needed
+        read_obj_file(argv[2], mat);
+      }
+      else{
+        printf("please specify an .obj file\n");
+	exit(0);
+      }
+    }
+  }
 
   yyparse();
   //COMMENT OUT PRINT_PCODE AND UNCOMMENT
