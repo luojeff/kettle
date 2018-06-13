@@ -254,7 +254,7 @@ void my_main() {
   double sreflect[3];
 
   // Supports up to MAX_LIGHTS light sources
-  double (light[2][3])[MAX_LIGHTS];
+  double light[MAX_LIGHTS][2][3];
 
   //double (view[3])[3];  
   //double (areflect[3])[3];
@@ -492,18 +492,18 @@ void my_main() {
 	ambient.blue = op[i].op.ambient.c[2];
 	break;
       case LIGHT:
-	; // don't remove this semicolon
-	struct light *lgt = op[i].op.light.p->s.l;
-
-	(light[light_count])[LOCATION][0] = lgt->l[0];
-	(light[light_count])[LOCATION][1] = lgt->l[1];
-	(light[light_count])[LOCATION][2] = lgt->l[2];
-	
-	(light[light_count])[COLOR][RED] = lgt->c[0];
-	(light[light_count])[COLOR][GREEN] = lgt->c[1];
-	(light[light_count])[COLOR][BLUE] = lgt->c[2];	
-
-	light_count++;
+	if(light_count < MAX_LIGHTS) {
+	  struct light *lgt = op[i].op.light.p->s.l;
+	  (light[light_count])[LOCATION][0] = lgt->l[0];
+	  (light[light_count])[LOCATION][1] = lgt->l[1];
+	  (light[light_count])[LOCATION][2] = lgt->l[2];
+	  
+	  (light[light_count])[COLOR][RED] = lgt->c[0];
+	  (light[light_count])[COLOR][GREEN] = lgt->c[1];
+	  (light[light_count])[COLOR][BLUE] = lgt->c[2];
+	  
+	  light_count++;
+	}
 	break;
       case CONSTANTS:
 	; // don't remove this semicolon

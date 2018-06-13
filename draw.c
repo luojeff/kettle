@@ -202,9 +202,8 @@ void draw_polygons(struct matrix *polygons, screen s, zbuffer zb,
   draw_polygons except it works with multiple lights
 */
 void draw_polygons(struct matrix *polygons, screen s, zbuffer zb,
-		   double *view, double (light[2][3])[MAX_LIGHTS], color ambient,
-			  double *areflect,
-			  double *dreflect,
+		   double *view, double light[MAX_LIGHTS][2][3],
+		   color ambient, double *areflect, double *dreflect,
 		   double *sreflect, int num_lights) {
   if ( polygons->lastcol < 3 ) {
     printf("Need at least 3 points to draw a polygon!\n");
@@ -218,9 +217,10 @@ void draw_polygons(struct matrix *polygons, screen s, zbuffer zb,
     
     normal = calculate_normal(polygons, point);
     if (dot_product(normal, view) > 0) {
-      int i;
       color c = {0, 0, 0};
-      for(i = 0; i < num_lights; i++) {
+      
+      int i;
+      for(i=0; i<num_lights; i++) {
         color new = get_lighting(normal, view, ambient, light[i], areflect, dreflect, sreflect);
 	c.red += new.red;
 	c.green += new.green;

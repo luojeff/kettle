@@ -13,7 +13,7 @@ void add_polygons( struct matrix * points,
                    double x1, double y1, double z1,
                    double x2, double y2, double z2);
 void draw_polygons( struct matrix * points, screen s, zbuffer zb,
-                    double *view, double (light[2][3])[MAX_LIGHTS], color ambient,
+                    double *view, double light[MAX_LIGHTS][2][3], color ambient,
                     double *areflect, double *dreflect, double *sreflect, int);
 
 //3d shapes
