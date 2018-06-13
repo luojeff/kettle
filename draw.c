@@ -149,10 +149,10 @@ void add_polygon( struct matrix *polygons,
   triangles
   ====================*/
 void draw_polygons(struct matrix *polygons, screen s, zbuffer zb,
-                   double *view, double light[2][3], color ambient,
-                   double *areflect,
-                   double *dreflect,
-                   double *sreflect) {
+                   double * view, double light[2][3], color ambient,
+                   double * areflect,
+                   double * dreflect,
+                   double * sreflect) {
   if ( polygons->lastcol < 3 ) {
     printf("Need at least 3 points to draw a polygon!\n");
     return;
@@ -169,6 +169,71 @@ void draw_polygons(struct matrix *polygons, screen s, zbuffer zb,
 
       color c = get_lighting(normal, view, ambient, light, areflect, dreflect, sreflect);
 
+      scanline_convert(polygons, point, s, zb, c);
+
+      draw_line( polygons->m[0][point],
+                 polygons->m[1][point],
+                 polygons->m[2][point],
+                 polygons->m[0][point+1],
+                 polygons->m[1][point+1],
+                 polygons->m[2][point+1],
+                 s, zb, c);
+      draw_line( polygons->m[0][point+2],
+                 polygons->m[1][point+2],
+                 polygons->m[2][point+2],
+                 polygons->m[0][point+1],
+                 polygons->m[1][point+1],
+                 polygons->m[2][point+1],
+                 s, zb, c);
+      draw_line( polygons->m[0][point],
+                 polygons->m[1][point],
+                 polygons->m[2][point],
+                 polygons->m[0][point+2],
+                 polygons->m[1][point+2],
+                 polygons->m[2][point+2],
+                 s, zb, c);
+    }
+  }
+}
+
+/*
+draw_polygons except it works with multiple lights
+*/
+void draw_polygons_mlight(struct matrix *polygons, screen s, zbuffer zb,
+                   double ** view, double * light[2][3], color * ambient,
+                   double ** areflect,
+                   double ** dreflect,
+                   double ** sreflect) {
+  if ( polygons->lastcol < 3 ) {
+    printf("Need at least 3 points to draw a polygon!\n");
+    return;
+  }
+
+  int point;
+  double *normal;
+
+  for (point=0; point < polygons->lastcol-2; point+=3) {
+
+    normal = calculate_normal(polygons, point);
+    if ( dot_product(normal, view) > 0 ) {
+
+	int i;
+	color c = {0,0,0};
+	for(i = 0; view[i] != NULL; i++){
+        color new = get_lighting(normal, view[i], ambient[i], light[i], areflect[i], dreflect[i], sreflect[i]);
+		c.red += new.red;
+		c.green += new.green;
+		c.blue += new.blue;
+		if(c.red > 255){
+			c.red = 255;
+		}
+		if(c.green > 255){
+			c.green = 255;
+		}
+		if(c.blue > 255){
+			c.blue = 255;
+		}
+	}
       scanline_convert(polygons, point, s, zb, c);
 
       draw_line( polygons->m[0][point],
