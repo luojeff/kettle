@@ -1,7 +1,9 @@
 frames 1
 basename basic
-ambient 50 50 50
+ambient 100 100 100
 light l0 1 1 1 255 0 0
+light l1 -1 1 1 0 0 255
+light l2 0 -1 1 0 255 0
 push
 move 900 0 0
 rotate x -60

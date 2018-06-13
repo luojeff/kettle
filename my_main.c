@@ -476,24 +476,27 @@ void my_main() {
 	ambient.blue = op[i].op.ambient.c[2];
 	break;
       case LIGHT:
-	op[i].op.line.p0[0];
-	op[i].op.line.p0[1];
-	op[i].op.line.p0[2];
-	op[i].op.line.p0[3];
-	op[i].op.line.p1[0];
-	op[i].op.line.p1[1];
-	op[i].op.line.p1[2];
-	op[i].op.line.p1[3];
-
-	light[LOCATION][0] = 0.5;
-  light[LOCATION][1] = 0.75;
-  light[LOCATION][2] = 1;
-
-  light[COLOR][RED] = 0;
-  light[COLOR][GREEN] = 255;
-  light[COLOR][BLUE] = 255;
+	; // don't remove this semicolon
+	struct light *lgt = op[i].op.light.p->s.l;
+	
+	light[LOCATION][0] = lgt->l[0];
+	light[LOCATION][1] = lgt->l[1];
+	light[LOCATION][2] = lgt->l[2];
+	
+	light[COLOR][RED] = lgt->c[0];
+	light[COLOR][GREEN] = lgt->c[1];
+	light[COLOR][BLUE] = lgt->c[2];
 	break;
-      case CONSTANTS:	
+      case CONSTANTS:
+	; // don't remove this semicolon
+	struct constants *cons = op[i].op.constants.p->s.c;
+
+	cons->r;
+	cons->g;
+	cons->b;
+
+	
+	
 	break;
       case PUSH:
 	//printf("Push");
