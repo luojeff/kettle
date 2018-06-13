@@ -3,64 +3,83 @@
 #include <errno.h>
 #include <ctype.h>
 
+#include "string.h"
+#include "draw.h"
 #include "matrix.h"
 #include "obj_reader.h"
 
-
 /*  
     Parses a .obj file as specified in *path* into a vertex
-    matrix *mat*
+    matrix *mat* and face order matrix *face_ord*
 */
-int read_obj_file(char *path, struct matrix *mat) {
-  FILE *fp;
-  size_t len = 0;
-  
-  char line[255];
-  char *cursor = line;
+int read_obj_file(char *path, struct matrix *mat, struct matrix *face_ord) {
+  FILE *fp = fopen(path, "r");
+  char *line = NULL;
+  size_t read, len = 0;
 
-  fp = fopen(path,"r");
-  
-  if(fp == NULL) // if obj file is missing    
-    return 0;
+  if (fp == NULL)
+    printf("Error: Cannot read .obj file!\n");
 
-  while( getline(&line, &len, fp) != -1 ){
-    if(cursor[1] != ' ' || cursor[1] != '\t')
-      return -1;
-    
-    if(*cursor == 'v'){
-      
-      char *nptr = cursor + 1;
-      char **endptr;
-      
-      int i;
+  double d_params[4];
+  int i_params[4];
+  i_params[3] = 0;
 
-      // Each entry is a coordinate for a vertex
-      // params[0] = x
-      // params[1] = y
-      // params[2] = z
-      double params[3];
+  int count;
+  char type;
+  while ((read = getline(&line, &len, fp)) != -1) {    
+    type = line[0];
+    count = 0;
+    if(type == 'v') {
       
-      for(i = 0; i < 2; i++){
-	params[i] = strtod(nptr, endptr);
-	
-	if(!isspace(endptr))
-	  return -1;
-	
-	nptr = *endptr;
-      }
-      
-      params[2] = strtod(nptr, endptr);
+      // vertex code
+      char *s = strtok(line, " ");      
+      while((s = strtok(NULL, " ")) != NULL)
+	d_params[count++] = atof(s);
 
-      mat->m[0][mat->lastcol] = params[0];
-      mat->m[1][mat->lastcol] = params[1];
-      mat->m[2][mat->lastcol] = params[2];
-      
-    } else {
-      return -1;
+      if (mat->lastcol == mat->cols)
+	grow_matrix(mat, mat->lastcol + 100);
+      mat->m[0][mat->lastcol] = d_params[0];
+      mat->m[1][mat->lastcol] = d_params[1];
+      mat->m[2][mat->lastcol] = d_params[2];
+      mat->m[3][mat->lastcol] = d_params[3];
+      mat->lastcol++;
+    } else if (type == 'f') {      
+
+      // face code
+      char *s = strtok(line, " ");      
+      while((s = strtok(NULL, " ")) != NULL)
+	i_params[count++] = atoi(s);
+
+      if (face_ord->lastcol == face_ord->cols)
+	grow_matrix(face_ord, face_ord->lastcol + 100);
+      face_ord->m[0][face_ord->lastcol] = (double)i_params[0];
+      face_ord->m[1][face_ord->lastcol] = (double)i_params[1];
+      face_ord->m[2][face_ord->lastcol] = (double)i_params[2];
+      face_ord->m[3][face_ord->lastcol] = (double)i_params[3];
+      face_ord->lastcol++;
+    } else if (type == '#') {
+    } else if (type == 'l') {
     }
   }
-    
+
   fclose(fp);
   
-  return 1;
+  if(line)
+    free(line);
+}
+
+/*
+  Increments pointer until reaching the next character that is not
+  whitespace
+
+  Example usages:
+
+  "v -10.2 10.5 20.1" ===> "-10.2 10.5 20.1"
+  "f 5 12 13"         ===> "5 12 31"
+*/
+char *skip_whitespace(char *s) {
+  s++;
+
+  while(s[0] == ' ' || s[0] == '\t')
+    s++;
 }

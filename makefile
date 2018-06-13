@@ -1,4 +1,4 @@
-OBJECTS= symtab.o print_pcode.o matrix.o my_main.o display.o draw.o gmath.o stack.o obj_reader.o
+OBJECTS= symtab.o print_pcode.o matrix.o my_main.o display.o draw.o gmath.o stack.o obj_reader.o mesh.o
 CFLAGS= -g
 LDFLAGS= -lm
 CC= gcc
@@ -30,7 +30,7 @@ my_main.o: my_main.c parser.h print_pcode.c matrix.h display.h ml6.h draw.h stac
 display.o: display.c display.h ml6.h matrix.h
 	$(CC) $(CFLAGS) -c display.c
 
-draw.o: draw.c draw.h display.h ml6.h matrix.h gmath.h
+draw.o: draw.c draw.h display.h ml6.h matrix.h gmath.h mesh.h
 	$(CC) $(CFLAGS) -c draw.c
 
 gmath.o: gmath.c gmath.h matrix.h
@@ -41,6 +41,9 @@ stack.o: stack.c stack.h matrix.h
 
 obj_reader.o: obj_reader.c obj_reader.h
 	$(CC) $(CFLAGS) -c obj_reader.c
+
+mesh.o: mesh.c mesh.h
+	$(CC) $(CFLAGS) -c mesh.c
 
 run: parser
 	./mdl basic.mdl

@@ -8,6 +8,8 @@
 #include "matrix.h"
 #include "math.h"
 #include "gmath.h"
+#include "obj_reader.h"
+#include "mesh.h"
 
 /*======== void scanline_convert() ==========
   Inputs: struct matrix *points
@@ -239,6 +241,64 @@ void add_box( struct matrix * polygons,
   add_polygon(polygons, x, y1, z, x1, y1, z1, x1, y1, z);
   add_polygon(polygons, x, y1, z, x, y1, z1, x1, y1, z1);
 }//end add_box
+
+void add_mesh(struct matrix *polygons, char *fname) {
+  struct mesh *mesh_conts = generate_mesh(fname);
+
+  struct matrix *pts = mesh_conts->points;
+  struct matrix *face_order = mesh_conts->face_ords;
+
+  int i1, i2, i3, i4; // indices
+  double v1[3], v2[3], v3[3], v4[3]; // vertices
+  
+  int i;
+  
+  // Iterate throughout face-order matrix and add polygons
+  for(i=0; i<face_order->lastcol; i++) {
+    i1 = (face_order->m)[0][i];
+    i2 = (face_order->m)[1][i];
+    i3 = (face_order->m)[2][i];
+    i4 = (face_order->m)[3][i];
+
+    int coord;
+    for(coord=0; coord<3; coord++) {
+
+      if(i4 > 0) {
+	v1[coord] = (pts->m)[coord][i1-1];
+	v2[coord] = (pts->m)[coord][i2-1];
+	v3[coord] = (pts->m)[coord][i3-1];
+	v4[coord] = (pts->m)[coord][i4-1];
+      } else {	
+	v1[coord] = (pts->m)[coord][i1-1];
+	v2[coord] = (pts->m)[coord][i2-1];
+	v3[coord] = (pts->m)[coord][i3-1];
+      }
+    }
+
+    if(i4 > 0) {
+      add_polygon(polygons, v1[0], v1[1], v1[2], v2[0], v2[1], v2[2], v3[0], v3[1], v3[2]);
+      add_polygon(polygons, v1[0], v1[1], v1[2], v3[0], v3[1], v3[2], v4[0], v4[1], v4[2]);
+    } else {
+      add_polygon(polygons, v1[0], v1[1], v1[2], v2[0], v2[1], v2[2], v3[0], v3[1], v3[2]);
+    }
+  }
+
+  free_mesh(mesh_conts);
+}
+
+struct mesh *generate_mesh(char *fname) {
+  struct mesh *ret_mesh = (struct mesh *)malloc(sizeof(struct mesh));
+  
+  struct matrix *pts = new_matrix(4, 100);
+  struct matrix *face_order = new_matrix(4, 100);
+  
+  read_obj_file(fname, pts, face_order);
+  
+  ret_mesh->points = pts;
+  ret_mesh->face_ords = face_order;
+
+  return ret_mesh;  
+}
 
 /*======== void add_sphere() ==========
   Inputs:   struct matrix * points

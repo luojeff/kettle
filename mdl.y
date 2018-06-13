@@ -398,6 +398,15 @@ LINE STRING DOUBLE DOUBLE DOUBLE STRING DOUBLE DOUBLE DOUBLE STRING
   op[lastop].op.line.cs1 = add_symbol($10,SYM_MATRIX,m);
   lastop++;
 }|
+MESH STRING
+{
+  lineno++;
+  op[lastop].opcode = MESH;
+  strcpy(op[lastop].op.mesh.name,$2);
+  op[lastop].op.mesh.constants = NULL;
+  op[lastop].op.mesh.cs = NULL;
+  lastop++;
+}|
 
 MESH CO STRING
 {
@@ -797,6 +806,7 @@ extern FILE *yyin;
 
 int main(int argc, char **argv) {
 
+  /*
   char help_manual[] = "Not enough arguments";
   struct matrix *mat;
   
@@ -820,6 +830,9 @@ int main(int argc, char **argv) {
       }
     }
   }
+  */
+
+  yyin = fopen(argv[1], "r");
 
   yyparse();
   //COMMENT OUT PRINT_PCODE AND UNCOMMENT

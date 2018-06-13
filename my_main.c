@@ -49,6 +49,7 @@
 #include "draw.h"
 #include "stack.h"
 #include "gmath.h"
+#include "obj_reader.h"
 
 
 /*======== void first_pass() ==========
@@ -232,6 +233,7 @@ void my_main() {
 
   int i;
   struct matrix *tmp;
+  struct matrix *face_order;
   struct stack *systems;
   screen t;
   zbuffer zb;
@@ -372,6 +374,13 @@ void my_main() {
 		      areflect, dreflect, sreflect);
 	tmp->lastcol = 0;
 	break;
+      case MESH:
+	add_mesh(tmp, op[i].op.mesh.name);
+	matrix_mult(peek(systems), tmp);
+	draw_polygons(tmp, t, zb, view, light, ambient,
+		      areflect, dreflect, sreflect);	
+	tmp->lastcol = 0;
+	break;
       case LINE:
 	/* printf("Line: from: %6.2f %6.2f %6.2f to: %6.2f %6.2f %6.2f",*/
 	/* 	 op[i].op.line.p0[0],op[i].op.line.p0[1], */
@@ -499,10 +508,11 @@ void my_main() {
     free(tmp);
     tmp = new_matrix(4, 1000);
   }
-
-  // Auto-create GIF
-  if(num_frames > 1)
-    make_animation(name);
+  
+  if(!num_frames || num_frames == 1)
+    save_extension(t, op[i].op.save.p->name);
+  else if (num_frames > 1)
+    make_animation(name); // Auto-create GIF
 
   printf("Finished!\n");
 }
