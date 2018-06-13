@@ -12,9 +12,7 @@ extern int lastop;
 #define Kd 1
 #define Ks 2
 
-
-struct command
-{
+struct command {
   int opcode;
   union
   {

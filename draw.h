@@ -3,6 +3,7 @@
 
 #include "matrix.h"
 #include "ml6.h"
+#include "lights.h"
 
 void scanline_convert( struct matrix *points, int i, screen s, zbuffer zb, color c );
 
@@ -12,8 +13,8 @@ void add_polygons( struct matrix * points,
                    double x1, double y1, double z1,
                    double x2, double y2, double z2);
 void draw_polygons( struct matrix * points, screen s, zbuffer zb,
-                    double *view, double light[2][3], color ambient,
-                    double *areflect, double *dreflect, double *sreflect);
+                    double *view, double (light[2][3])[MAX_LIGHTS], color ambient,
+                    double *areflect, double *dreflect, double *sreflect, int);
 
 //3d shapes
 void add_box( struct matrix * edges,

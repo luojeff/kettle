@@ -50,6 +50,7 @@
 #include "stack.h"
 #include "gmath.h"
 #include "obj_reader.h"
+#include "lights.h"
 
 
 /*======== void first_pass() ==========
@@ -245,30 +246,43 @@ void my_main() {
   double theta;
   double knob_value, xval, yval, zval;
 
-  //Lighting values here for easy access
+  //Lighting values here for easy access    
   color ambient;
-  double light[2][3];
   double view[3];
   double areflect[3];
   double dreflect[3];
   double sreflect[3];
 
+  // Supports up to MAX_LIGHTS light sources
+  double (light[2][3])[MAX_LIGHTS];
+
+  //double (view[3])[3];  
+  //double (areflect[3])[3];
+  //double (dreflect[3])[3];
+  //double (sreflect[3])[3];
+
+  /*
   ambient.red = 50;
   ambient.green = 50;
   ambient.blue = 50;
+  */
+  
 
-  light[LOCATION][0] = 0.5;
-  light[LOCATION][1] = 0.75;
-  light[LOCATION][2] = 1;
+  /*
+    light[LOCATION][0] = 0.5;
+    light[LOCATION][1] = 0.75;
+    light[LOCATION][2] = 1;
 
-  light[COLOR][RED] = 0;
-  light[COLOR][GREEN] = 255;
-  light[COLOR][BLUE] = 255;
+    light[COLOR][RED] = 0;
+    light[COLOR][GREEN] = 255;
+    light[COLOR][BLUE] = 255;
+
+  */
 
   view[0] = 0;
   view[1] = 0;
   view[2] = 1;
-
+  
   areflect[RED] = 0.1;
   areflect[GREEN] = 0.1;
   areflect[BLUE] = 0.1;
@@ -287,7 +301,9 @@ void my_main() {
   clear_zbuffer(zb);
 
   first_pass();  
-  struct vary_node **vary_nodes = second_pass();  
+  struct vary_node **vary_nodes = second_pass();
+
+  int light_count = 0;
   
   int a;
   for(a=0; a<num_frames; a++) {
@@ -301,7 +317,7 @@ void my_main() {
       curr_node = curr_node->next;
     }
 
-    knob_value = 1.0;    
+    knob_value = 1.0;
     for(i=0; i<lastop; i++) {
       
       switch (op[i].opcode) {
@@ -324,7 +340,7 @@ void my_main() {
 		   op[i].op.sphere.r, step_3d);
 	matrix_mult( peek(systems), tmp );
 	draw_polygons(tmp, t, zb, view, light, ambient,
-		      areflect, dreflect, sreflect);
+		      areflect, dreflect, sreflect, light_count);
 	tmp->lastcol = 0;
 	break;
       case TORUS:
@@ -347,7 +363,7 @@ void my_main() {
 		  op[i].op.torus.r0,op[i].op.torus.r1, step_3d);
 	matrix_mult( peek(systems), tmp );
 	draw_polygons(tmp, t, zb, view, light, ambient,
-		      areflect, dreflect, sreflect);
+		      areflect, dreflect, sreflect, light_count);
 	tmp->lastcol = 0;
 	break;
       case BOX:
@@ -371,16 +387,16 @@ void my_main() {
 		op[i].op.box.d1[2]);
 	matrix_mult(peek(systems), tmp);
 	draw_polygons(tmp, t, zb, view, light, ambient,
-		      areflect, dreflect, sreflect);
+		      areflect, dreflect, sreflect, light_count);
 	tmp->lastcol = 0;
 	break;
       case MESH:
 	add_mesh(tmp, op[i].op.mesh.name);
 	matrix_mult(peek(systems), tmp);
 	draw_polygons(tmp, t, zb, view, light, ambient,
-		      areflect, dreflect, sreflect);
-	tmp->lastcol = 0;
-	break;
+		      areflect, dreflect, sreflect, light_count);
+	tmp->lastcol = 0;	
+	break;	  
       case LINE:
 	/* printf("Line: from: %6.2f %6.2f %6.2f to: %6.2f %6.2f %6.2f",*/
 	/* 	 op[i].op.line.p0[0],op[i].op.line.p0[1], */
@@ -478,22 +494,42 @@ void my_main() {
       case LIGHT:
 	; // don't remove this semicolon
 	struct light *lgt = op[i].op.light.p->s.l;
+
+	(light[light_count])[LOCATION][0] = lgt->l[0];
+	(light[light_count])[LOCATION][1] = lgt->l[1];
+	(light[light_count])[LOCATION][2] = lgt->l[2];
 	
-	light[LOCATION][0] = lgt->l[0];
-	light[LOCATION][1] = lgt->l[1];
-	light[LOCATION][2] = lgt->l[2];
-	
-	light[COLOR][RED] = lgt->c[0];
-	light[COLOR][GREEN] = lgt->c[1];
-	light[COLOR][BLUE] = lgt->c[2];
+	(light[light_count])[COLOR][RED] = lgt->c[0];
+	(light[light_count])[COLOR][GREEN] = lgt->c[1];
+	(light[light_count])[COLOR][BLUE] = lgt->c[2];	
+
+	light_count++;
 	break;
       case CONSTANTS:
 	; // don't remove this semicolon
-	struct constants *cons = op[i].op.constants.p->s.c;
+	/*
+	  struct constants *cons = op[i].op.constants.p->s.c;
 
-	cons->r;
-	cons->g;
-	cons->b;	
+	  cons->r;
+	  cons->g;
+	  cons->b;
+	
+	  (view[light_count])[0] = 0;
+	  (view[light_count])[1] = 0;
+	  (view[light_count])[2] = 1;
+
+	  (areflect[light_count])[RED] = 0.1;
+	  (areflect[light_count])[GREEN] = 0.1;
+	  (areflect[light_count])[BLUE] = 0.1;
+	
+	  (dreflect[light_count])[RED] = 0.5;
+	  (dreflect[light_count])[GREEN] = 0.5;
+	  (dreflect[light_count])[BLUE] = 0.5;
+
+	  (sreflect[light_count])[RED] = 0.5;
+	  (sreflect[light_count])[GREEN] = 0.5;
+	  (sreflect[light_count])[BLUE] = 0.5;
+	*/
 	
 	break;
       case PUSH:

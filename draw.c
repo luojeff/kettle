@@ -13,11 +13,11 @@
 
 /*======== void scanline_convert() ==========
   Inputs: struct matrix *points
-          int i
-          screen s
-          zbuffer zb
+  int i
+  screen s
+  zbuffer zb
   Returns:
-
+v
   Fills in polygon i by drawing consecutive horizontal (or vertical) lines.
 
   Color should be set differently for each polygon.
@@ -148,6 +148,7 @@ void add_polygon( struct matrix *polygons,
   lines connecting each points to create bounding
   triangles
   ====================*/
+/*
 void draw_polygons(struct matrix *polygons, screen s, zbuffer zb,
                    double * view, double light[2][3], color ambient,
                    double * areflect,
@@ -195,45 +196,44 @@ void draw_polygons(struct matrix *polygons, screen s, zbuffer zb,
     }
   }
 }
+*/
 
 /*
-draw_polygons except it works with multiple lights
+  draw_polygons except it works with multiple lights
 */
-void draw_polygons_mlight(struct matrix *polygons, screen s, zbuffer zb,
-                   double ** view, double * light[2][3], color * ambient,
-                   double ** areflect,
-                   double ** dreflect,
-                   double ** sreflect) {
+void draw_polygons(struct matrix *polygons, screen s, zbuffer zb,
+		   double *view, double (light[2][3])[MAX_LIGHTS], color ambient,
+			  double *areflect,
+			  double *dreflect,
+		   double *sreflect, int num_lights) {
   if ( polygons->lastcol < 3 ) {
     printf("Need at least 3 points to draw a polygon!\n");
-    return;
+    exit(0);
   }
 
   int point;
   double *normal;
 
-  for (point=0; point < polygons->lastcol-2; point+=3) {
-
+  for (point=0; point<polygons->lastcol-2; point+=3) {
+    
     normal = calculate_normal(polygons, point);
-    if ( dot_product(normal, view) > 0 ) {
-
-	int i;
-	color c = {0,0,0};
-	for(i = 0; view[i] != NULL; i++){
-        color new = get_lighting(normal, view[i], ambient[i], light[i], areflect[i], dreflect[i], sreflect[i]);
-		c.red += new.red;
-		c.green += new.green;
-		c.blue += new.blue;
-		if(c.red > 255){
-			c.red = 255;
-		}
-		if(c.green > 255){
-			c.green = 255;
-		}
-		if(c.blue > 255){
-			c.blue = 255;
-		}
-	}
+    if (dot_product(normal, view) > 0) {
+      int i;
+      color c = {0, 0, 0};
+      for(i = 0; i < num_lights; i++) {
+        color new = get_lighting(normal, view, ambient, light[i], areflect, dreflect, sreflect);
+	c.red += new.red;
+	c.green += new.green;
+	c.blue += new.blue;
+	
+	if(c.red > 255)
+	  c.red = 255;
+	if(c.green > 255)
+	  c.green = 255;
+	if(c.blue > 255)
+	  c.blue = 255;
+      }
+      
       scanline_convert(polygons, point, s, zb, c);
 
       draw_line( polygons->m[0][point],
