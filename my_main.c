@@ -470,6 +470,31 @@ void my_main() {
 	copy_matrix(tmp, peek(systems));
 	tmp->lastcol = 0;
 	break;
+      case AMBIENT:
+	ambient.red = op[i].op.ambient.c[0];
+	ambient.green = op[i].op.ambient.c[1];
+	ambient.blue = op[i].op.ambient.c[2];
+	break;
+      case LIGHT:
+	op[i].op.line.p0[0];
+	op[i].op.line.p0[1];
+	op[i].op.line.p0[2];
+	op[i].op.line.p0[3];
+	op[i].op.line.p1[0];
+	op[i].op.line.p1[1];
+	op[i].op.line.p1[2];
+	op[i].op.line.p1[3];
+
+	light[LOCATION][0] = 0.5;
+  light[LOCATION][1] = 0.75;
+  light[LOCATION][2] = 1;
+
+  light[COLOR][RED] = 0;
+  light[COLOR][GREEN] = 255;
+  light[COLOR][BLUE] = 255;
+	break;
+      case CONSTANTS:	
+	break;
       case PUSH:
 	//printf("Push");
 	push(systems);
