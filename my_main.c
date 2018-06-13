@@ -369,7 +369,7 @@ void my_main() {
 		op[i].op.box.d0[2],
 		op[i].op.box.d1[0],op[i].op.box.d1[1],
 		op[i].op.box.d1[2]);
-	matrix_mult( peek(systems), tmp );
+	matrix_mult(peek(systems), tmp);
 	draw_polygons(tmp, t, zb, view, light, ambient,
 		      areflect, dreflect, sreflect);
 	tmp->lastcol = 0;
@@ -378,7 +378,7 @@ void my_main() {
 	add_mesh(tmp, op[i].op.mesh.name);
 	matrix_mult(peek(systems), tmp);
 	draw_polygons(tmp, t, zb, view, light, ambient,
-		      areflect, dreflect, sreflect);	
+		      areflect, dreflect, sreflect);
 	tmp->lastcol = 0;
 	break;
       case LINE:
@@ -493,9 +493,7 @@ void my_main() {
 
 	cons->r;
 	cons->g;
-	cons->b;
-
-	
+	cons->b;	
 	
 	break;
       case PUSH:
@@ -536,11 +534,8 @@ void my_main() {
     free(tmp);
     tmp = new_matrix(4, 1000);
   }
-  
-  if(!num_frames || num_frames == 1)
-    save_extension(t, op[i].op.save.p->name);
-  else if (num_frames > 1)
-    make_animation(name); // Auto-create GIF
+
+  make_animation(name); // Auto-create GIF
 
   printf("Finished!\n");
 }

@@ -247,6 +247,7 @@ void add_mesh(struct matrix *polygons, char *fname) {
 
   struct matrix *pts = mesh_conts->points;
   struct matrix *face_order = mesh_conts->face_ords;
+  struct matrix *vert_norms = mesh_conts->vert_norms;
 
   int i1, i2, i3, i4; // indices
   double v1[3], v2[3], v3[3], v4[3]; // vertices
@@ -262,7 +263,6 @@ void add_mesh(struct matrix *polygons, char *fname) {
 
     int coord;
     for(coord=0; coord<3; coord++) {
-
       if(i4 > 0) {
 	v1[coord] = (pts->m)[coord][i1-1];
 	v2[coord] = (pts->m)[coord][i2-1];
@@ -288,16 +288,16 @@ void add_mesh(struct matrix *polygons, char *fname) {
 
 struct mesh *generate_mesh(char *fname) {
   struct mesh *ret_mesh = (struct mesh *)malloc(sizeof(struct mesh));
-  
-  struct matrix *pts = new_matrix(4, 100);
-  struct matrix *face_order = new_matrix(4, 100);
-  
-  read_obj_file(fname, pts, face_order);
-  
-  ret_mesh->points = pts;
-  ret_mesh->face_ords = face_order;
 
-  return ret_mesh;  
+  struct matrix *mat, *face_ord, *vert_norms;
+  
+  ret_mesh->points = new_matrix(4, 100);
+  ret_mesh->face_ords = new_matrix(4, 100);
+  ret_mesh->vert_norms = new_matrix(4, 100);
+  
+  read_obj_file(fname, ret_mesh);
+
+  return ret_mesh;		      
 }
 
 /*======== void add_sphere() ==========
