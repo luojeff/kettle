@@ -46,7 +46,7 @@ mesh.o: mesh.c mesh.h
 	$(CC) $(CFLAGS) -c mesh.c
 
 run: parser
-	./mdl basic.mdl
+	./mdl pumpkin.mdl
 
 clean:
 	rm y.tab.c y.tab.h
