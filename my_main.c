@@ -507,11 +507,9 @@ void my_main() {
       case CONSTANTS:
 	; // don't remove this semicolon
       char * name = op[i].op.constants.p->name;
-      printf("name: %s\n",name);
 
       struct constants *cons;
 
-      printf("part0\n");
       int ii;
       for(ii = 0; ii < constant_dictionary_size; ii++){
         if(strcmp(name,constant_dictionary[ii]->name) == 0){
@@ -520,14 +518,10 @@ void my_main() {
             break;
         }
       }
-      printf("part1\n");
       if(ii >= constant_dictionary_size){
           //if constant is not defined
-		  printf("part2\n");
           cons = op[i].op.constants.p->s.c;
-          printf("part3\n");
           constant_dictionary[constant_dictionary_size] = op[i].op.constants.p;
-          printf("part4\n");
           constant_dictionary_size++;
       }
 
