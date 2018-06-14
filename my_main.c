@@ -296,21 +296,21 @@ void my_main() {
 
   first_pass();  
   struct vary_node **vary_nodes = second_pass();
-
-  int light_count = 0;
   
   int a;
   for(a=0; a<num_frames; a++) {
+
+    int light_count = 0;
     SYMTAB *curr_sym;
     struct vary_node *curr_node = vary_nodes[a];
 
     // Set symbol table
     while(curr_node != NULL) {
-      curr_sym = lookup_symbol(curr_node->name);     
-      set_value(curr_sym, curr_node->value);     
+      curr_sym = lookup_symbol(curr_node->name);
+      set_value(curr_sym, curr_node->value);
       curr_node = curr_node->next;
     }
-
+    
     knob_value = 1.0;
     for(i=0; i<lastop; i++) {
       
@@ -542,7 +542,8 @@ void my_main() {
 	//printf("Display");
 	display(t);
 	break;
-      } //end opcode switch
+      } //end opcode switch      
+
       printf("\n");
     }//end operation loop
     

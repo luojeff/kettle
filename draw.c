@@ -159,7 +159,6 @@ void draw_polygons(struct matrix *polygons, screen s, zbuffer zb,
 
   int point;
   double *normal;
-
   for (point=0; point<polygons->lastcol-2; point+=3) {
     
     normal = calculate_normal(polygons, point);
@@ -169,17 +168,18 @@ void draw_polygons(struct matrix *polygons, screen s, zbuffer zb,
       int i;
       for(i=0; i<num_lights; i++) {
         color new = get_lighting(normal, view, ambient, light[i], areflect, dreflect, sreflect);
+	
 	c.red += new.red;
 	c.green += new.green;
-	c.blue += new.blue;
-	
-	if(c.red > 255)
-	  c.red = 255;
-	if(c.green > 255)
-	  c.green = 255;
-	if(c.blue > 255)
-	  c.blue = 255;
+	c.blue += new.blue;	
       }
+
+      if(c.red > 255)
+	c.red = 255;
+      if(c.green > 255)
+	c.green = 255;
+      if(c.blue > 255)
+	c.blue = 255;      
       
       scanline_convert(polygons, point, s, zb, c);
 
@@ -257,9 +257,11 @@ void add_box( struct matrix * polygons,
 void add_mesh(struct matrix *polygons, char *fname) {
   struct mesh *mesh_conts = generate_mesh(fname);
 
-  struct matrix *pts = mesh_conts->points;
-  struct matrix *face_order = mesh_conts->face_ords;
-  struct matrix *vert_norms = mesh_conts->vert_norms;
+  struct matrix *pts, *face_order, *vert_norms;
+
+  pts = mesh_conts->points;
+  face_order = mesh_conts->face_ords;
+  vert_norms = mesh_conts->vert_norms;
 
   int i1, i2, i3, i4; // indices
   double v1[3], v2[3], v3[3], v4[3]; // vertices
@@ -300,8 +302,6 @@ void add_mesh(struct matrix *polygons, char *fname) {
 
 struct mesh *generate_mesh(char *fname) {
   struct mesh *ret_mesh = (struct mesh *)malloc(sizeof(struct mesh));
-
-  struct matrix *mat, *face_ord, *vert_norms;
   
   ret_mesh->points = new_matrix(4, 100);
   ret_mesh->face_ords = new_matrix(4, 100);
