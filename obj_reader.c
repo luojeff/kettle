@@ -32,12 +32,10 @@ int read_obj_file(char *path, struct mesh *mh) {
   i_params[3] = 0;
 
   int count;
-  char type;
   while ((read = getline(&line, &len, fp)) != -1) {    
     count = 0;
     
-    char *s;
-    s = strtok(line, " ");
+    char *s = strtok(line, " ");
 
     if(strcmp(s, "v") == 0) {
 
@@ -75,6 +73,7 @@ int read_obj_file(char *path, struct mesh *mh) {
       vert_norms->m[2][vert_norms->lastcol] = d_params2[2];
       vert_norms->lastcol++;
     } else if (strcmp(s, "g") == 0) {
+      
       // group code
     }
   }

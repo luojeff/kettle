@@ -256,29 +256,23 @@ void my_main() {
   // Supports up to MAX_LIGHTS light sources
   double light[MAX_LIGHTS][2][3];
 
-  //double (view[3])[3];  
-  //double (areflect[3])[3];
-  //double (dreflect[3])[3];
-  //double (sreflect[3])[3];
-
-  /*
+  // Default ambient light if none specified:
   ambient.red = 50;
   ambient.green = 50;
   ambient.blue = 50;
-  */
-  
 
-  /*
-    light[LOCATION][0] = 0.5;
-    light[LOCATION][1] = 0.75;
-    light[LOCATION][2] = 1;
+  // Default location for light if none specified:
+  // (x, y, z) = (  1,   1,   1)
+  // (r, g, b) = (255, 255, 255)  
+  light[0][LOCATION][0] = 1;
+  light[0][LOCATION][1] = 1;
+  light[0][LOCATION][2] = 1;
 
-    light[COLOR][RED] = 0;
-    light[COLOR][GREEN] = 255;
-    light[COLOR][BLUE] = 255;
+  light[0][COLOR][RED] = 255;
+  light[0][COLOR][GREEN] = 255;
+  light[0][COLOR][BLUE] = 255;
 
-  */
-
+  // View vector doesn't change
   view[0] = 0;
   view[1] = 0;
   view[2] = 1;
