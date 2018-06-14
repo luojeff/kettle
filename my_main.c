@@ -276,6 +276,11 @@ void my_main() {
   double theta;
   double knob_value, xval, yval, zval;
 
+  //variables for constants
+  SYMTAB * constant_dictionary[255];
+  int constant_dictionary_size = 0;
+  //
+
   //Lighting values here for easy access    
   color ambient;
   double view[3];
@@ -531,29 +536,44 @@ void my_main() {
 	break;
       case CONSTANTS:
 	; // don't remove this semicolon
-	/*
-	  struct constants *cons = op[i].op.constants.p->s.c;
+      char * name = op[i].op.constants.p->name;
+
+      struct constants *cons;
+
+      int ii;
+      for(ii = 0; ii < constant_dictionary_size; ii++){
+        if(strcmp(name,constant_dictionary[ii]->name) == 0){
+            //if constant is already defined
+            cons = constant_dictionary[ii]->s.c;
+            break;
+        }
+      }
+      if(ii >= constant_dictionary_size){
+          //if constant is not defined
+          cons = op[i].op.constants.p->s.c;
+          constant_dictionary[constant_dictionary_size] = op[i].op.constants.p;
+          constant_dictionary_size++;
+      }
 
 	  cons->r;
 	  cons->g;
 	  cons->b;
 	
-	  (view[light_count])[0] = 0;
-	  (view[light_count])[1] = 0;
-	  (view[light_count])[2] = 1;
+	  view[0] = cons->r[0];
+	  view[1] = cons->g[0];
+	  view[2] = cons->b[0];
 
-	  (areflect[light_count])[RED] = 0.1;
-	  (areflect[light_count])[GREEN] = 0.1;
-	  (areflect[light_count])[BLUE] = 0.1;
+	  areflect[RED]   = cons->r[1];
+	  areflect[GREEN] = cons->g[1];
+	  areflect[BLUE]  = cons->b[1];
 	
-	  (dreflect[light_count])[RED] = 0.5;
-	  (dreflect[light_count])[GREEN] = 0.5;
-	  (dreflect[light_count])[BLUE] = 0.5;
+	  dreflect[RED]   = cons->r[2];
+	  dreflect[GREEN] = cons->g[2];
+	  dreflect[BLUE]  = cons->b[2];
 
-	  (sreflect[light_count])[RED] = 0.5;
-	  (sreflect[light_count])[GREEN] = 0.5;
-	  (sreflect[light_count])[BLUE] = 0.5;
-	*/
+	  sreflect[RED]   = cons->r[3];
+	  sreflect[GREEN] = cons->g[3];
+	  sreflect[BLUE]  = cons->b[3];
 	
 	break;
       case PUSH:
