@@ -103,7 +103,8 @@ struct command {
     } frames;
     struct {
       SYMTAB *p;
-      double start_frame, end_frame, start_val, end_val;
+      double given_hermite;
+      double start_frame, end_frame, start_val, end_val, start_hermite, end_hermite;
     } vary;
     struct {
       SYMTAB *p;

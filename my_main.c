@@ -121,6 +121,13 @@ void first_pass() {
   }
 }
 
+/* 
+Evalutes polynomial ax^3 + bx^2 + cx + d with val plugged in as x
+*/
+double trinomial(double val, double a, double b, double c, double d) {
+  return a*pow(val, 3) + b*pow(val, 2) + c*val + d;
+}
+
 /*======== struct vary_node ** second_pass() ==========
   Inputs:
   Returns: An array of vary_node linked lists
@@ -143,25 +150,48 @@ void first_pass() {
 struct vary_node **second_pass() {
   struct vary_node **arr_nodes = (struct vary_node **)calloc(num_frames, sizeof(struct vary_node *));
 
-  int sf, ef;
-  double sv, ev;
+  int sf, ef; // start frame, end frame
+  double sv, ev; // start val, end val
+  double sh, eh; // start hermite, end hermite
+  int gh; // whether or not given hermite values
 
   int i;
   for(i=0; i<lastop; i++) {
-    if(op[i].opcode == VARY) {
+    
+    double a, b, c, d;
+    if(op[i].opcode == VARY) {      
       sf = op[i].op.vary.start_frame, ef = op[i].op.vary.end_frame;
       sv = op[i].op.vary.start_val, ev = op[i].op.vary.end_val;
+      gh = op[i].op.vary.given_hermite;
 
+      if(gh) {
+	sh = op[i].op.vary.start_hermite, eh = op[i].op.vary.end_hermite;      
+	struct matrix *hem_coefs = generate_curve_coefs(sv, ev, sh, eh, HERMITE);      
+	a = hem_coefs->m[0][0];
+	b = hem_coefs->m[1][0];
+	c = hem_coefs->m[2][0];
+	d = hem_coefs->m[3][0];
+      }
+      
       double cv = sv; // current knob value
       double inc = (double)(ev - sv) / (ef - sf);
       struct vary_node *vnode, *new_node;
 
-      int j;
-      for(j=sf; j<=ef; j++){	
+      double val; // value calculated for hermite curve
+      int j;      
+      for(j=sf; j<=ef; j++){
+	if(gh) 
+	  val = trinomial(cv, a, b, c, d); // plug into equation
+	else
+	  val = cv;
+
+	if(inc < 0)
+	  val = trinomial(1-cv, a, b, c, d);
+	
 	if(arr_nodes[j] == NULL) {
 	  vnode = (struct vary_node *)malloc(sizeof(struct vary_node));
 	  strncpy(vnode->name, op[i].op.vary.p->name, 128);
-	  vnode->value = cv;
+	  vnode->value = val;
 	  vnode->next = NULL;
 	  arr_nodes[j] = vnode;
 	} else {
@@ -172,7 +202,7 @@ struct vary_node **second_pass() {
 	  vnode->next = new_node;
 	  new_node->next = NULL;
 	  strncpy(new_node->name, op[i].op.vary.p->name, 128);
-	  new_node->value = cv;
+	  new_node->value = val;
 	}
 	
 	cv += inc;

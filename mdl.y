@@ -736,6 +736,22 @@ VARY STRING DOUBLE DOUBLE DOUBLE DOUBLE
   op[lastop].op.vary.end_frame = $4;
   op[lastop].op.vary.start_val = $5;
   op[lastop].op.vary.end_val = $6;
+  op[lastop].op.vary.given_hermite = 0;
+  lastop++;
+}|
+
+VARY STRING DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE DOUBLE
+{
+  lineno++;
+  op[lastop].opcode = VARY;
+  op[lastop].op.vary.p = add_symbol($2,SYM_STRING,0);
+  op[lastop].op.vary.start_frame = $3;
+  op[lastop].op.vary.end_frame = $4;
+  op[lastop].op.vary.start_val = $5;
+  op[lastop].op.vary.end_val = $6;
+  op[lastop].op.vary.start_hermite = $7;
+  op[lastop].op.vary.end_hermite = $8;
+  op[lastop].op.vary.given_hermite = 1;
   lastop++;
 }|
 

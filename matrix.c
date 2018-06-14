@@ -100,8 +100,8 @@ struct matrix * generate_curve_coefs( double p0, double p1,
   //  print_matrix(coefs);
   //printf("\n");
   
-  if (type == HERMITE)
-    curve = make_hermite(); 
+  if(type == HERMITE)
+    curve = make_hermite();
   else
     curve = make_bezier();
   
