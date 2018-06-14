@@ -348,21 +348,31 @@ void my_main() {
     
     knob_value = 1.0;
     for(i=0; i<lastop; i++) {
-      
+
       switch (op[i].opcode) {
       case SPHERE:
 	/* printf("Sphere: %6.2f %6.2f %6.2f r=%6.2f", */
 	/* 	 op[i].op.sphere.d[0],op[i].op.sphere.d[1], */
 	/* 	 op[i].op.sphere.d[2], */
 	/* 	 op[i].op.sphere.r); */
-	if (op[i].op.sphere.constants != NULL)
-	  {
+	if (op[i].op.sphere.constants != NULL) {
 	    //printf("\tconstants: %s",op[i].op.sphere.constants->name);
-	  }
-	if (op[i].op.sphere.cs != NULL)
-	  {
+	    struct constants *cons = op[i].op.sphere.constants->s.c;
+	    areflect[RED] = cons->r[0];
+	    areflect[GREEN] = cons->g[0];
+	    areflect[BLUE] = cons->b[0];
+	    
+	    dreflect[RED] = cons->r[1];
+	    dreflect[GREEN] = cons->g[1];
+	    dreflect[BLUE] = cons->b[1];
+
+	    sreflect[RED] = cons->r[2];
+	    sreflect[GREEN] = cons->g[2];
+	    sreflect[BLUE] = cons->b[2];
+	}
+	if (op[i].op.sphere.cs != NULL) {
 	    //printf("\tcs: %s",op[i].op.sphere.cs->name);
-	  }
+	}
 	add_sphere(tmp, op[i].op.sphere.d[0],
 		   op[i].op.sphere.d[1],
 		   op[i].op.sphere.d[2],
@@ -377,14 +387,24 @@ void my_main() {
 	/* 	 op[i].op.torus.d[0],op[i].op.torus.d[1], */
 	/* 	 op[i].op.torus.d[2], */
 	/* 	 op[i].op.torus.r0,op[i].op.torus.r1); */
-	if (op[i].op.torus.constants != NULL)
-	  {
+	if (op[i].op.torus.constants != NULL) {
 	    //printf("\tconstants: %s",op[i].op.torus.constants->name);
-	  }
-	if (op[i].op.torus.cs != NULL)
-	  {
+	    struct constants *cons = op[i].op.torus.constants->s.c;
+	    areflect[RED] = cons->r[0];
+	    areflect[GREEN] = cons->g[0];
+	    areflect[BLUE] = cons->b[0];
+	    
+	    dreflect[RED] = cons->r[1];
+	    dreflect[GREEN] = cons->g[1];
+	    dreflect[BLUE] = cons->b[1];
+
+	    sreflect[RED] = cons->r[2];
+	    sreflect[GREEN] = cons->g[2];
+	    sreflect[BLUE] = cons->b[2];
+	}
+	if (op[i].op.torus.cs != NULL) {
 	    //printf("\tcs: %s",op[i].op.torus.cs->name);
-	  }
+	}
 	add_torus(tmp,
 		  op[i].op.torus.d[0],
 		  op[i].op.torus.d[1],
@@ -401,14 +421,24 @@ void my_main() {
 	/* 	 op[i].op.box.d0[2], */
 	/* 	 op[i].op.box.d1[0],op[i].op.box.d1[1], */
 	/* 	 op[i].op.box.d1[2]); */
-	if (op[i].op.box.constants != NULL)
-	  {
+	if (op[i].op.box.constants != NULL) {
 	    //printf("\tconstants: %s",op[i].op.box.constants->name);
-	  }
-	if (op[i].op.box.cs != NULL)
-	  {
+	  struct constants *cons = op[i].op.box.constants->s.c;
+	  areflect[RED] = cons->r[0];
+	  areflect[GREEN] = cons->g[0];
+	  areflect[BLUE] = cons->b[0];
+	    
+	  dreflect[RED] = cons->r[1];
+	  dreflect[GREEN] = cons->g[1];
+	  dreflect[BLUE] = cons->b[1];
+
+	  sreflect[RED] = cons->r[2];
+	  sreflect[GREEN] = cons->g[2];
+	  sreflect[BLUE] = cons->b[2];
+	}
+	if (op[i].op.box.cs != NULL) {
 	    //printf("\tcs: %s",op[i].op.box.cs->name);
-	  }
+	}
 	add_box(tmp,
 		op[i].op.box.d0[0],op[i].op.box.d0[1],
 		op[i].op.box.d0[2],
@@ -420,6 +450,24 @@ void my_main() {
 	tmp->lastcol = 0;
 	break;
       case MESH:
+	if (op[i].op.mesh.constants != NULL) {
+	    //printf("\tconstants: %s",op[i].op.box.constants->name);
+	  struct constants *cons = op[i].op.mesh.constants->s.c;
+	  areflect[RED] = cons->r[0];
+	  areflect[GREEN] = cons->g[0];
+	  areflect[BLUE] = cons->b[0];
+	    
+	  dreflect[RED] = cons->r[1];
+	  dreflect[GREEN] = cons->g[1];
+	  dreflect[BLUE] = cons->b[1];
+
+	  sreflect[RED] = cons->r[2];
+	  sreflect[GREEN] = cons->g[2];
+	  sreflect[BLUE] = cons->b[2];
+	}
+	if (op[i].op.mesh.cs != NULL) {
+	    //printf("\tcs: %s",op[i].op.box.cs->name);
+	}
 	add_mesh(tmp, op[i].op.mesh.name);
 	matrix_mult(peek(systems), tmp);
 	draw_polygons(tmp, t, zb, view, light, ambient,
@@ -536,12 +584,18 @@ void my_main() {
 	break;
       case CONSTANTS:
 	; // don't remove this semicolon
-      char * name = op[i].op.constants.p->name;
 
-      struct constants *cons;
+	//op[i].op.constants.p->name;
+	
+	
+	/*
+	char * name = op[i].op.constants.p->name;
 
-      int ii;
-      for(ii = 0; ii < constant_dictionary_size; ii++){
+	
+	struct constants *cons;
+
+	int ii;
+	for(ii = 0; ii < constant_dictionary_size; ii++){
         if(strcmp(name,constant_dictionary[ii]->name) == 0){
             //if constant is already defined
             cons = constant_dictionary[ii]->s.c;
@@ -554,28 +608,24 @@ void my_main() {
           constant_dictionary[constant_dictionary_size] = op[i].op.constants.p;
           constant_dictionary_size++;
       }
-
-	  cons->r;
-	  cons->g;
-	  cons->b;
 	
-	  view[0] = cons->r[0];
-	  view[1] = cons->g[0];
-	  view[2] = cons->b[0];
+      view[0] = cons->r[0];
+      view[1] = cons->g[0];
+      view[2] = cons->b[0];
 
-	  areflect[RED]   = cons->r[1];
-	  areflect[GREEN] = cons->g[1];
-	  areflect[BLUE]  = cons->b[1];
+      areflect[RED]   = cons->r[1];
+      areflect[GREEN] = cons->g[1];
+      areflect[BLUE]  = cons->b[1];
 	
-	  dreflect[RED]   = cons->r[2];
-	  dreflect[GREEN] = cons->g[2];
-	  dreflect[BLUE]  = cons->b[2];
+      dreflect[RED]   = cons->r[2];
+      dreflect[GREEN] = cons->g[2];
+      dreflect[BLUE]  = cons->b[2];
 
-	  sreflect[RED]   = cons->r[3];
-	  sreflect[GREEN] = cons->g[3];
-	  sreflect[BLUE]  = cons->b[3];
-	
-	break;
+      sreflect[RED]   = cons->r[3];
+      sreflect[GREEN] = cons->g[3];
+      sreflect[BLUE]  = cons->b[3];	
+	*/
+      break;
       case PUSH:
 	//printf("Push");
 	push(systems);
