@@ -16,6 +16,9 @@ Edmond Wong
 ```constant <constant name> <constant value 1> <constant value 2> ...```
 - Create meshes from obj files and attach constants to them to simulate certain textures\
 ```mesh <constant> <file path to OBJ>```\
+- Ambient lightning\
+```ambient <r> <g> <b>```\
+
 Note:
 OBJ files only support `v` (vertex) and `f` (face) prefixes.\
 e.g. Valid entries include ```v 5.6 10.3 1.9``` and ```f 1 3 4```
